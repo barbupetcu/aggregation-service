@@ -1,1 +1,5 @@
 services:
+  backend-services:
+    image: 'xyzassessment/backend-services'
+    ports:
+      - '8081:8080'
