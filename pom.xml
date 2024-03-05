@@ -50,11 +50,6 @@
 			<version>${spring-cloud-contract-wiremock.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>io.github.adr</groupId>
-			<artifactId>e-adr</artifactId>
-			<version>1.0.0</version>
-		</dependency>
 	</dependencies>
 
 	<build>

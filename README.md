@@ -1,28 +1,25 @@
-# Read Me First
-The following was discovered as part of building this project:
+# Aggregation Service
 
-* No Docker Compose services found. As of now, the application won't start! Please add at least one service to the `compose.yaml` file.
+## ADRs
 
-# Getting Started
+* [ADR-0001](doc/adr/0001-spring-webflux-usage.md) - Usage of spring webflux framework
+* [ADR-0002](doc/adr/0002-trigger-call-for-each-parameter.md) - Trigger a webclient call for each parameter received on request
 
-### Reference Documentation
-For further reference, please consider the following sections:
+## Get Started
 
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/3.2.3/maven-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/3.2.3/maven-plugin/reference/html/#build-image)
-* [Docker Compose Support](https://docs.spring.io/spring-boot/docs/3.2.3/reference/htmlsingle/index.html#features.docker-compose)
-* [Spring Reactive Web](https://docs.spring.io/spring-boot/docs/3.2.3/reference/htmlsingle/index.html#web.reactive)
+### Pre-requisites
 
-### Guides
-The following guides illustrate how to use some features concretely:
+* JDK 17
+* Docker
 
-* [Building a Reactive RESTful Web Service](https://spring.io/guides/gs/reactive-rest-service/)
+### Command
+
+```
+./mvnw spring-boot:run
+```
 
 ### Docker Compose support
 This project contains a Docker Compose file named `compose.yaml`.
 
-However, no services were found. As of now, the application won't start!
-
-Please make sure to add at least one service in the `compose.yaml` file.
+This file is used Spring Boot Docker Compose support and it contains the dependent services in order to run this project.
 

@@ -3,7 +3,6 @@ package com.test.aggregationservice.api;
 import com.test.aggregationservice.api.exception.ParametersNotValidException;
 import com.test.aggregationservice.api.exception.ResourceNotFoundException;
 import com.test.aggregationservice.application.service.AggregationService;
-import io.github.adr.embedded.MADR;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,16 +16,6 @@ import java.util.Set;
 @RestController
 @RequestMapping("aggregation")
 @RequiredArgsConstructor
-@MADR(
-        value = 1,
-        title = "Aggregate all services responses",
-        contextAndProblem = "Query all services in a single network call",
-        chosenAlternative = "Used spring web flux server",
-        justification = """
-                Take advantage of non-blocking nature of reactive library which\s
-                allow us to trigger the request to each service in parallel
-                """
-)
 public class AggregationController {
 
     private final AggregationService aggregationService;
