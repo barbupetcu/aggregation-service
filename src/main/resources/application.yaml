@@ -1,1 +1,7 @@
+endpoints:
+  backend-services: http://localhost:8081
 
+backend-services:
+  shipments: shipments
+  track: track
+  pricing: pricing
