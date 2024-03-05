@@ -18,6 +18,11 @@
 ./mvnw spring-boot:run
 ```
 
+### IntelliJ
+
+![img.png](doc/img.png)
+
+
 ### Docker Compose support
 This project contains a Docker Compose file named `compose.yaml`.
 
