@@ -27,7 +27,7 @@ class BulkedServiceClientTest {
 
     @BeforeEach
     void init() {
-        bulkedServiceClient = new BulkedServiceClient(backendServicesClient,3);
+        bulkedServiceClient = new BulkedServiceClient(backendServicesClient,3, Duration.ofSeconds(2));
         bulkedServiceClient.init();
     }
 
@@ -40,6 +40,21 @@ class BulkedServiceClientTest {
 
         verifyNoInteractions(backendServicesClient);
 
+    }
+
+    @Test
+    void forwardRequestToBackendServiceWhenCapIsNotReachedButTimeoutExpiredForPricing() {
+        bulkedServiceClient = new BulkedServiceClient(backendServicesClient, 3, Duration.ofSeconds(1));
+        bulkedServiceClient.init();
+
+        doReturn(Mono.just(Map.of("1", 1.00, "2", 2.00)))
+                .when(backendServicesClient).getPricing(Set.of("1", "2"));
+
+        Mono<Map<String, Double>> result = bulkedServiceClient.getPricing(Set.of("1", "2"));
+
+        StepVerifier.create(result)
+                .expectNext(Map.of("1", 1.00, "2", 2.00))
+                .verifyComplete();
     }
 
     @Test
@@ -66,6 +81,21 @@ class BulkedServiceClientTest {
 
         verifyNoInteractions(backendServicesClient);
 
+    }
+
+    @Test
+    void forwardRequestToBackendServiceWhenCapIsNotReachedButTimeoutExpiredForTracking() {
+        bulkedServiceClient = new BulkedServiceClient(backendServicesClient, 3, Duration.ofSeconds(1));
+        bulkedServiceClient.init();
+
+        doReturn(Mono.just(Map.of("1", "tracking1", "2", "tracking2")))
+                .when(backendServicesClient).getTracking(Set.of("1", "2"));
+
+        Mono<Map<String, String>> result = bulkedServiceClient.getTracking(Set.of("1", "2"));
+
+        StepVerifier.create(result)
+                .expectNext(Map.of("1", "tracking1", "2", "tracking2"))
+                .verifyComplete();
     }
 
     @Test
@@ -107,6 +137,21 @@ class BulkedServiceClientTest {
                 .expectNext(Map.of("3", List.of("shipment3")))
                 .verifyComplete();
 
+    }
+
+    @Test
+    void forwardRequestToBackendServiceWhenCapIsNotReachedButTimeoutExpiredForShipments() {
+        bulkedServiceClient = new BulkedServiceClient(backendServicesClient, 3, Duration.ofSeconds(1));
+        bulkedServiceClient.init();
+
+        doReturn(Mono.just(Map.of("1", List.of("shipment1"), "2", List.of("shipment2"))))
+                .when(backendServicesClient).getShipments(Set.of("1", "2"));
+
+        Mono<Map<String, List<String>>> result = bulkedServiceClient.getShipments(Set.of("1", "2"));
+
+        StepVerifier.create(result)
+                .expectNext(Map.of("1", List.of("shipment1"), "2", List.of("shipment2")))
+                .verifyComplete();
     }
 
 }

@@ -1,4 +1,4 @@
-# 3. Trigger a webclient call for each parameter received on request
+# 3. Batch parameters sent to backend services
 
 Date: 2024-03-05
 

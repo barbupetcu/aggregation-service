@@ -8,3 +8,4 @@ backend-services:
 
 request:
   bulk-size: 5
+  timeout: 5S

@@ -4,6 +4,8 @@
 
 * [ADR-0001](doc/adr/0001-spring-webflux-usage.md) - Usage of spring webflux framework
 * [ADR-0002](doc/adr/0002-trigger-call-for-each-parameter.md) - Trigger a webclient call for each parameter received on request
+* [ADR-0003](doc/adr/0003-bulk-requests.md) - Batch parameters sent to backend services
+* [ADR-0004](doc/adr/0004-add-timeout-for-request-batches.md) - Add timeout for each batch to avoid long aggregation responses
 
 ## Get Started
 

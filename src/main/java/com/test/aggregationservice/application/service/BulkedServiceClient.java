@@ -9,6 +9,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +23,8 @@ public class BulkedServiceClient {
     private final BackendServicesClient backendServicesClient;
     @Value("${request.bulk-size}")
     private final int bulkSize;
+    @Value("${request.timeout}")
+    private final Duration timeout;
 
     private final Sinks.Many<Tuple2<String, Sinks.One<Tuple2<String, Double>>>> pricingQueue =
             Sinks.many().unicast().onBackpressureBuffer();
@@ -33,17 +36,17 @@ public class BulkedServiceClient {
     @PostConstruct
     void init() {
         pricingQueue.asFlux()
-                .buffer(bulkSize)
+                .bufferTimeout(bulkSize, timeout)
                 .flatMap(bulk -> handleBulkRequest(bulk, backendServicesClient::getPricing))
                 .subscribe();
 
         trackingQueue.asFlux()
-                .buffer(bulkSize)
+                .bufferTimeout(bulkSize, timeout)
                 .flatMap(bulk -> handleBulkRequest(bulk, backendServicesClient::getTracking))
                 .subscribe();
 
         shipmentsQueue.asFlux()
-                .buffer(bulkSize)
+                .bufferTimeout(bulkSize, timeout)
                 .flatMap(bulk -> handleBulkRequest(bulk, backendServicesClient::getShipments))
                 .subscribe();
     }
