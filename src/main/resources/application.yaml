@@ -5,3 +5,6 @@ backend-services:
   shipments: shipments
   track: track
   pricing: pricing
+
+request:
+  bulk-size: 5

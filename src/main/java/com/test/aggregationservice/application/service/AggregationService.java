@@ -1,15 +1,12 @@
 package com.test.aggregationservice.application.service;
 
 import com.test.aggregationservice.application.model.AggregatedData;
-import com.test.aggregationservice.infrastructure.client.BackendServicesClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -18,7 +15,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class AggregationService {
 
-    private final BackendServicesClient client;
+    private final BulkedServiceClient bulkedServiceClient;
 
     public Mono<AggregatedData> getAggregatedData(
             Set<String> pricing,
@@ -26,9 +23,9 @@ public class AggregationService {
             Set<String> shipments
     ) {
         return Mono.zip(
-                        getApiResponse(pricing, client::getPricing),
-                        getApiResponse(track, client::getTracking),
-                        getApiResponse(shipments, client::getShipments)
+                        getApiResponse(pricing, bulkedServiceClient::getPricing),
+                        getApiResponse(track, bulkedServiceClient::getTracking),
+                        getApiResponse(shipments, bulkedServiceClient::getShipments)
                 )
                 .map(
                         tuple ->
@@ -46,9 +43,6 @@ public class AggregationService {
         if (CollectionUtils.isEmpty(ids)) {
             return Mono.just(Collections.emptyMap());
         }
-        return Flux.fromIterable(ids)
-                .map(Set::of)
-                .flatMap(clientFunction)
-                .collect(HashMap::new, Map::putAll);
+        return clientFunction.apply(ids);
     }
 }

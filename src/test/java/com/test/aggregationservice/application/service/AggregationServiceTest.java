@@ -1,7 +1,6 @@
 package com.test.aggregationservice.application.service;
 
 import com.test.aggregationservice.application.model.AggregatedData;
-import com.test.aggregationservice.infrastructure.client.BackendServicesClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,21 +27,21 @@ class AggregationServiceTest {
     @InjectMocks
     private AggregationService aggregationService;
     @Mock
-    private BackendServicesClient backendServicesClient;
+    private BulkedServiceClient backendServicesClient;
 
     @Test
     void aggregateResponseFromAllApisSuccessfully() {
-        doReturn(Mono.just(Map.of("1", "COLLECTING"))).when(backendServicesClient).getTracking(Set.of("1"));
-        doReturn(Mono.just(Map.of("2", "DELIVERING"))).when(backendServicesClient).getTracking(Set.of("2"));
+        doReturn(Mono.just(Map.of("1", "COLLECTING", "2", "DELIVERING")))
+                .when(backendServicesClient).getTracking(Set.of("1", "2"));
 
-        doReturn(Mono.just(Map.of("3", List.of("pallet", "envelope"))))
-                .when(backendServicesClient).getShipments(Set.of("3"));
-        doReturn(Mono.just(Map.of("4", List.of("box")))).when(backendServicesClient).getShipments(Set.of("4"));
+        doReturn(Mono.just(Map.of("3", List.of("pallet", "envelope"), "4", List.of("box"))))
+                .when(backendServicesClient).getShipments(Set.of("3", "4"));
 
-        doReturn(Mono.just(Map.of("A", 1.0D))).when(backendServicesClient).getPricing(Set.of("A"));
-        doReturn(Mono.just(Map.of("B", 2.0D))).when(backendServicesClient).getPricing(Set.of("B"));
+        doReturn(Mono.just(Map.of("A", 1.0D, "B", 2.0D)))
+                .when(backendServicesClient).getPricing(Set.of("A", "B"));
 
-        Mono<AggregatedData> result = aggregationService.getAggregatedData(PRICING_PARAMS, TRACK_PARAMS, SHIPMENTS_PARAMS);
+        Mono<AggregatedData> result =
+                aggregationService.getAggregatedData(PRICING_PARAMS, TRACK_PARAMS, SHIPMENTS_PARAMS);
 
         StepVerifier.create(result)
                 .expectNextMatches(
@@ -56,8 +55,8 @@ class AggregationServiceTest {
 
     @Test
     void filterOutUnWantedRequests() {
-        doReturn(Mono.just(Map.of("1", "COLLECTING"))).when(backendServicesClient).getTracking(Set.of("1"));
-        doReturn(Mono.just(Map.of("2", "DELIVERING"))).when(backendServicesClient).getTracking(Set.of("2"));
+        doReturn(Mono.just(Map.of("1", "COLLECTING", "2", "DELIVERING")))
+                .when(backendServicesClient).getTracking(Set.of("1", "2"));
 
         Mono<AggregatedData> result = aggregationService.getAggregatedData(null, TRACK_PARAMS, Collections.emptySet());
 
